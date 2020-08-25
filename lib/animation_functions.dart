@@ -11,15 +11,22 @@ double getWidth(BuildContext context) {
       MediaQuery.of(context).padding.left -
       MediaQuery.of(context).padding.right;
 }
+
 Size getSize(BuildContext context) {
   return Size(getWidth(context), getHeight(context));
 }
+
 Offset getCenterOffset(
     Size size, double animationEvolution, bool reversingWidgets) {
   try {
     Offset offsetToReturn = Offset(
-        size.width * ((0.5 + animationEvolution * 1.5 ) + (reversingWidgets? - 1 : 0)),
+        size.width *
+            ((0.5 + animationEvolution * 1.5) + (reversingWidgets ? -1 : 0)),
         size.height * (.8 - (.3 * animationEvolution)));
+    print("the x and y of the center points are " +
+        offsetToReturn.dx.toString() +
+        " " +
+        offsetToReturn.dy.toString());
     return offsetToReturn;
   } catch (e) {
     print(e.toString());

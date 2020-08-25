@@ -7,7 +7,9 @@ import 'dart:math';
 
 class CircleAnimation extends StatefulWidget {
   final Widget firstWidget, secondWidget;
-  const CircleAnimation({Key key, this.firstWidget, this.secondWidget})
+  final bool movingTheButton;
+  const CircleAnimation(
+      {Key key, this.firstWidget, this.secondWidget, this.movingTheButton})
       : super(key: key);
   @override
   _CircleAnimationState createState() => _CircleAnimationState();
@@ -27,25 +29,39 @@ class _CircleAnimationState extends State<CircleAnimation>
   Future<bool> playAnimation() async {
     try {
       //! Playing the first animation
-      this._circleOnBoardingAniamtionState =
-          CircleOnBoardingAniamtionState.MovingTheButton;
-      this._movingButtonController.forward().then((value) {
+      if (this.widget.movingTheButton) {
         this._circleOnBoardingAniamtionState =
-            CircleOnBoardingAniamtionState.StartAnimation;
-        this._firstAnimationController.forward().then((value) {
-          //! reversing the widgets order in the stack
-          this.reversingWidgets = true;
-          this._firstAnimationController.reverse().then((value) {
-            this._circleOnBoardingAniamtionState =
-                CircleOnBoardingAniamtionState.MovingTheButton;
-            this._movingButtonController.reverse().then((value) {
-              this.animationCompleted = true;
-              _circleOnBoardingAniamtionState =
-                  CircleOnBoardingAniamtionState.ButtonCenter;
+            CircleOnBoardingAniamtionState.MovingTheButton;
+        this._movingButtonController.forward().then((value) {
+          this._circleOnBoardingAniamtionState =
+              CircleOnBoardingAniamtionState.StartAnimation;
+          this._firstAnimationController.forward().then((value) {
+            //! reversing the widgets order in the stack
+            this.reversingWidgets = true;
+            this._firstAnimationController.reverse().then((value) {
+              this._circleOnBoardingAniamtionState =
+                  CircleOnBoardingAniamtionState.MovingTheButton;
+              this._movingButtonController.reverse().then((value) {
+                this.animationCompleted = true;
+                _circleOnBoardingAniamtionState =
+                    CircleOnBoardingAniamtionState.ButtonCenter;
+              });
             });
           });
         });
-      });
+      } else {
+        this._circleOnBoardingAniamtionState =
+            CircleOnBoardingAniamtionState.StartAnimation;
+        this._firstAnimationController.forward().then((value) {
+          this.reversingWidgets = true;
+          this._firstAnimationController.reverse().then((value) {
+            this.animationCompleted = true;
+            setState(() {
+              this._circleOnBoardingAniamtionState = CircleOnBoardingAniamtionState.ButtonCenter;
+            });
+          });
+        });
+      }
       return true;
     } catch (e) {
       print(e.toString());
@@ -55,25 +71,39 @@ class _CircleAnimationState extends State<CircleAnimation>
 
   Future<bool> reverseAnimation() async {
     try {
-      this._circleOnBoardingAniamtionState =
-          CircleOnBoardingAniamtionState.MovingTheButton;
-      //!playig the first animation backward
-      this._movingButtonController.forward().then((value) {
+      if (this.widget.movingTheButton) {
+        this._circleOnBoardingAniamtionState =
+            CircleOnBoardingAniamtionState.MovingTheButton;
+        //!playig the first animation backward
+        this._movingButtonController.forward().then((value) {
+          this._circleOnBoardingAniamtionState =
+              CircleOnBoardingAniamtionState.StartAnimation;
+          this._firstAnimationController.forward().then((value) {
+            this.reversingWidgets = false;
+            this._firstAnimationController.reverse().then((value) {
+              this._circleOnBoardingAniamtionState =
+                  CircleOnBoardingAniamtionState.MovingTheButton;
+              this._movingButtonController.reverse().then((value) {
+                _circleOnBoardingAniamtionState =
+                    CircleOnBoardingAniamtionState.ButtonCenter;
+                this.animationCompleted = false;
+              });
+            });
+          });
+        });
+      } else {
         this._circleOnBoardingAniamtionState =
             CircleOnBoardingAniamtionState.StartAnimation;
         this._firstAnimationController.forward().then((value) {
           this.reversingWidgets = false;
           this._firstAnimationController.reverse().then((value) {
-            this._circleOnBoardingAniamtionState =
-                CircleOnBoardingAniamtionState.MovingTheButton;
-            this._movingButtonController.reverse().then((value) {
-              _circleOnBoardingAniamtionState =
-                  CircleOnBoardingAniamtionState.ButtonCenter;
-              this.animationCompleted = false;
+            this.animationCompleted = false;
+            setState(() {
+              this._circleOnBoardingAniamtionState = CircleOnBoardingAniamtionState.ButtonCenter;
             });
           });
         });
-      });
+      }
       return true;
     } catch (e) {
       print(e.toString());
@@ -111,7 +141,7 @@ class _CircleAnimationState extends State<CircleAnimation>
     // TODO: implement initState
     super.initState();
     this._firstAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this);
+        duration: animationCircleDuration * .5, vsync: this);
     this._firstCurvedAniamtion = CurvedAnimation(
         parent: this._firstAnimationController,
         curve: Curves.easeInCirc,
@@ -123,41 +153,46 @@ class _CircleAnimationState extends State<CircleAnimation>
               this.value = this._firstAnimationController.value;
             });
           });
-    this._movingButtonController = AnimationController(
-        duration: Duration(milliseconds: 200), vsync: this)
-      ..addListener(() {
-        setState(() {
-          this.leftButtonMargin = initialLeftMargin +
-              this._movingButtonController.value *
-                  (gettingTheCurrentCenterOfTheCircle(
-                              this._circleOnBoardingAniamtionState,this.reversingWidgets)
-                          .dx -
-                      initialLeftMargin);
+    if (this.widget.movingTheButton) {
+      this._movingButtonController = AnimationController(
+          duration: movingTheButtonDuration, vsync: this)
+        ..addListener(() {
+          setState(() {
+            this.leftButtonMargin = initialLeftMargin +
+                this._movingButtonController.value *
+                    (gettingTheCurrentCenterOfTheCircle(
+                                this._circleOnBoardingAniamtionState,
+                                this.reversingWidgets)
+                            .dx -
+                        initialLeftMargin);
+          });
+        })
+        ..addStatusListener((status) {
+          if (status == AnimationStatus.completed)
+            setState(() {
+              this.leftButtonMargin = initialLeftMargin +
+                  this._movingButtonController.value *
+                      (gettingTheCurrentCenterOfTheCircle(
+                                  this._circleOnBoardingAniamtionState,
+                                  !this.animationCompleted)
+                              .dx -
+                          initialLeftMargin);
+              print("status is completed" + this.leftButtonMargin.toString());
+            });
+          else if (status == AnimationStatus.dismissed) {
+            setState(() {
+              this.leftButtonMargin = initialLeftMargin +
+                  this._movingButtonController.value *
+                      (gettingTheCurrentCenterOfTheCircle(
+                                  this._circleOnBoardingAniamtionState,
+                                  this.animationCompleted)
+                              .dx -
+                          initialLeftMargin);
+              print("status is dismissed" + this.leftButtonMargin.toString());
+            });
+          }
         });
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed)
-          setState(() {
-            this.leftButtonMargin = initialLeftMargin +
-                this._movingButtonController.value *
-                    (gettingTheCurrentCenterOfTheCircle(
-                                this._circleOnBoardingAniamtionState, !this.animationCompleted)
-                            .dx -
-                        initialLeftMargin);
-            print("status is completed" + this.leftButtonMargin.toString());
-          });
-        else if(status == AnimationStatus.dismissed){
-          setState(() {
-            this.leftButtonMargin = initialLeftMargin +
-                this._movingButtonController.value *
-                    (gettingTheCurrentCenterOfTheCircle(
-                                this._circleOnBoardingAniamtionState, this.animationCompleted)
-                            .dx -
-                        initialLeftMargin);
-            print("status is dismissed" + this.leftButtonMargin.toString());
-          });
-        }
-      });
+    }
   }
 
   @override
@@ -212,6 +247,7 @@ class _CircleAnimationState extends State<CircleAnimation>
                 )
               : ClipOval(
                   clipper: OnBoardingClipper(
+                      movingButton: this.widget.movingTheButton,
                       animationEvolution: this.value,
                       reversingWidgets: this.reversingWidgets),
                   child: this.reversingWidgets

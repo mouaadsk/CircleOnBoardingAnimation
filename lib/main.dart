@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animation_circle/animation_functions.dart';
+import 'package:flutter_animation_circle/animationparametrs.dart';
 import 'animation.dart';
 
 void main() {
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
           secondWidget: Container(
             color: Colors.black,
           ),
+          movingTheButton: movingTheButton,
         ));
   }
 }

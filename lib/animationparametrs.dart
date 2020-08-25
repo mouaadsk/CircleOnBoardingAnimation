@@ -4,5 +4,8 @@ double buttonHeight = .1, buttonBottomMargin = 0.15;
 
 //! the zoomFactor paramaeter means how much of growth the cutted rectangle (transformed to a circle) must be 
 double circleZoomingFactor = 50;
-
+ //! in this variable you can adjust if you want to move the button to the center before/after the animation start/end
+ bool movingTheButton = false;
+ //! these variables are for the duration of the animation/movingTheButton
+ Duration animationCircleDuration = Duration(seconds : 2), movingTheButtonDuration = Duration(milliseconds: 200);
 
