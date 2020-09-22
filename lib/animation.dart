@@ -6,11 +6,16 @@ import 'package:flutter_animation_circle/enums.dart';
 import 'dart:math';
 
 class CircleAnimation extends StatefulWidget {
+  final List<Color> buttonColors;
   final Widget firstWidget, secondWidget;
   final bool movingTheButton;
-  const CircleAnimation(
-      {Key key, this.firstWidget, this.secondWidget, this.movingTheButton})
-      : super(key: key);
+  const CircleAnimation({
+    Key key,
+    @required this.firstWidget,
+    @required this.secondWidget,
+    @required this.movingTheButton,
+    @required this.buttonColors,
+  }) : super(key: key);
   @override
   _CircleAnimationState createState() => _CircleAnimationState();
 }
@@ -57,7 +62,8 @@ class _CircleAnimationState extends State<CircleAnimation>
           this._firstAnimationController.reverse().then((value) {
             this.animationCompleted = true;
             setState(() {
-              this._circleOnBoardingAniamtionState = CircleOnBoardingAniamtionState.ButtonCenter;
+              this._circleOnBoardingAniamtionState =
+                  CircleOnBoardingAniamtionState.ButtonCenter;
             });
           });
         });
@@ -99,7 +105,8 @@ class _CircleAnimationState extends State<CircleAnimation>
           this._firstAnimationController.reverse().then((value) {
             this.animationCompleted = false;
             setState(() {
-              this._circleOnBoardingAniamtionState = CircleOnBoardingAniamtionState.ButtonCenter;
+              this._circleOnBoardingAniamtionState =
+                  CircleOnBoardingAniamtionState.ButtonCenter;
             });
           });
         });
@@ -127,18 +134,8 @@ class _CircleAnimationState extends State<CircleAnimation>
     }
   }
 
-  Future<bool> movingTheButtonToPoistion(Offset moveToOffset) async {
-    try {
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return false;
-    }
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     this._firstAnimationController = AnimationController(
         duration: animationCircleDuration * .5, vsync: this);
@@ -231,14 +228,14 @@ class _CircleAnimationState extends State<CircleAnimation>
                     },
                     elevation: 2.0,
                     fillColor:
-                        this.reversingWidgets ? Colors.amber : Colors.black,
+                        this.reversingWidgets ? this.widget.buttonColors[0] : this.widget.buttonColors[1],
                     child: Icon(
                       this.reversingWidgets
                           ? Icons.arrow_back
                           : Icons.arrow_forward,
                       size: screenHeight * buttonHeight * .45,
                       color:
-                          this.reversingWidgets ? Colors.black : Colors.amber,
+                          this.reversingWidgets ? this.widget.buttonColors[1] : this.widget.buttonColors[0],
                     ),
                     padding:
                         EdgeInsets.all(screenHeight * (buttonHeight * .275)),

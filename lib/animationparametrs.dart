@@ -7,5 +7,5 @@ double circleZoomingFactor = 50;
  //! in this variable you can adjust if you want to move the button to the center before/after the animation start/end
  bool movingTheButton = false;
  //! these variables are for the duration of the animation/movingTheButton
- Duration animationCircleDuration = Duration(seconds : 2), movingTheButtonDuration = Duration(milliseconds: 200);
+ Duration animationCircleDuration = Duration(seconds : 1), movingTheButtonDuration = Duration(milliseconds: 200);
 
