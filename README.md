@@ -16,10 +16,10 @@ To use this animation, you can follow the instructions bellow :
 
 ## The original Vs The created animation 
 
-### The original animation ([Link](https://dribbble.com/shots/6654320-Animated-Onboarding-Screens))
+### The created animation
 
 ![alt The original animation](https://github.com/mouaadsk/CircleOnBoardingAnimation/blob/master/assets/GIFs/flutter-animation-circle.gif?raw=true)
 
-### The created animation
+### The original animation ([Link](https://dribbble.com/shots/6654320-Animated-Onboarding-Screens))
 
 ![alt The created animation](https://github.com/mouaadsk/CircleOnBoardingAnimation/blob/master/assets/GIFs/onBoardingCircle.gif?raw=true)
